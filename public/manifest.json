@@ -1,0 +1,20 @@
+{
+  "name": "HEARTH AI — AI-Powered Service Marketplace",
+  "short_name": "Hearth AI",
+  "description": "AI-powered marketplace connecting you with verified professionals for every home and business service.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0C0A09",
+  "theme_color": "#D4952E",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Book Service", "short_name": "Book", "url": "/services", "icons": [{ "src": "/icons/book.png", "sizes": "96x96" }] },
+    { "name": "My Bookings", "short_name": "Bookings", "url": "/dashboard", "icons": [{ "src": "/icons/calendar.png", "sizes": "96x96" }] }
+  ],
+  "categories": ["lifestyle", "utilities", "productivity"]
+}
