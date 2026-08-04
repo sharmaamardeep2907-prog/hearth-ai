@@ -1,0 +1,1 @@
+module.exports={preset:"ts-jest",testEnvironment:"node",roots:["<rootDir>/src"],testMatch:["**/tests/**/*.test.ts"],testTimeout:30000,collectCoverageFrom:["src/**/*.ts","!src/tests/**","!src/seed/**","!src/docs/**"],coverageThreshold:{global:{branches:70,functions:70,lines:70,statements:70}}};
