@@ -1,0 +1,18 @@
+export interface IUser { _id: string; name: string; email: string; phone: string; password?: string; avatar?: string; role: "customer"|"provider"|"admin"; status: "active"|"suspended"|"banned"; addresses: IAddress[]; savedProviders: string[]; lastLogin?: Date; createdAt: Date; updatedAt: Date; }
+export interface IAddress { _id: string; label: string; street: string; city: string; state: string; pincode: string; isDefault: boolean; }
+export interface IProvider { _id: string; userId: string; name: string; email: string; phone: string; avatar?: string; profession: string; title: string; tagline: string; bio: string; philosophy: string; experience: number; skills: string[]; languages: string[]; location: string; city: string; serviceAreas: string[]; travelRadius: number; services: IProviderService[]; weeklySchedule: IWeeklySchedule[]; emergencyAvailable: boolean; rating: number; reviewCount: number; totalJobs: number; responseTime: string; onTimeRate: number; repeatRate: number; satisfactionScore: number; verified: boolean; featured: boolean; tier: "platinum"|"gold"|"silver"; status: "active"|"suspended"|"pending"; trustBadges: ITrustBadge[]; certifications: ICertification[]; licenses: ILicense[]; education: IEducation[]; awards: IAward[]; portfolio: IPortfolioItem[]; stats: IProviderStats; createdAt: Date; updatedAt: Date; }
+export interface IProviderService { _id: string; name: string; price: number; priceType: "fixed"|"estimate"; duration: number; estTime: string; desc: string; includes: string[]; packages?: { name: string; price: number }[]; addons?: { name: string; price: number }[]; }
+export interface IWeeklySchedule { day: string; available: boolean; slots: string[]; }
+export interface ITrustBadge { label: string; desc: string; }
+export interface ICertification { name: string; issuer: string; year: number; }
+export interface ILicense { type: string; number: string; issuedBy: string; }
+export interface IEducation { degree: string; school: string; year: number; }
+export interface IAward { title: string; org: string; year: number; }
+export interface IPortfolioItem { _id: string; title: string; desc: string; category: string; images: number; hasBA: boolean; }
+export interface IProviderStats { responseTime: string; onTimeRate: number; repeatRate: number; satisfactionScore: number; qualityScore: number; tier: string; }
+export interface IBooking { _id: string; customerId: string; providerId: string; serviceName: string; date: string; time: string; status: string; amount: number; platformFee: number; providerEarnings: number; paymentStatus: string; address: IAddress; notes?: string; cancellationReason?: string; createdAt: Date; updatedAt: Date; }
+export interface IReview { _id: string; bookingId: string; customerId: string; providerId: string; customerName: string; providerName: string; serviceName: string; rating: number; comment: string; helpful: number; providerReply?: { comment: string; date: Date }; createdAt: Date; }
+export interface IWallet { _id: string; userId: string; balance: number; totalEarned: number; totalSpent: number; transactions: ITransaction[]; createdAt: Date; updatedAt: Date; }
+export interface ITransaction { _id: string; type: "credit"|"debit"; source: "cashback"|"referral"|"booking"|"payout"|"refund"; amount: number; description: string; bookingId?: string; createdAt: Date; }
+export interface INotification { _id: string; userId: string; type: "booking"|"message"|"payment"|"review"|"system"; title: string; body: string; data?: Record<string,any>; read: boolean; createdAt: Date; }
+export interface ApiResponse<T=any> { success: boolean; message: string; data?: T; meta?: { page: number; limit: number; total: number; totalPages: number }; }
