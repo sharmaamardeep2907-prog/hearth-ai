@@ -9,29 +9,25 @@ export class ApiError extends Error {
   public readonly correlationId: string;
   public readonly details?: unknown;
 
-  constructor(statusCode: number, message: string, options?: { errorCode?: string; isOperational?: boolean; requestId?: string; correlationId?: string; details?: unknown }) {
+  constructor(statusCode: number, message: string, options?: { errorCode?: string; isOperational?: boolean; details?: unknown }) {
     super(message);
     Object.setPrototypeOf(this, ApiError.prototype);
     this.statusCode = statusCode;
     this.isOperational = options?.isOperational ?? true;
     this.errorCode = options?.errorCode ?? `ERR_${statusCode}`;
-    this.requestId = options?.requestId ?? uuidv4();
-    this.correlationId = options?.correlationId ?? uuidv4();
+    this.requestId = uuidv4();
+    this.correlationId = uuidv4();
     this.details = options?.details;
   }
 
-  static badRequest(msg = "Bad Request", code?: string) { return new ApiError(400, msg, { errorCode: code || "BAD_REQUEST" }); }
-  static unauthorized(msg = "Unauthorized") { return new ApiError(401, msg, { errorCode: "UNAUTHORIZED" }); }
-  static forbidden(msg = "Forbidden") { return new ApiError(403, msg, { errorCode: "FORBIDDEN" }); }
-  static notFound(msg = "Not found") { return new ApiError(404, msg, { errorCode: "NOT_FOUND" }); }
-  static conflict(msg = "Conflict") { return new ApiError(409, msg, { errorCode: "CONFLICT" }); }
-  static validation(details: unknown) { return new ApiError(422, "Validation Error", { errorCode: "VALIDATION_ERROR", details }); }
-  static tooMany(msg = "Too many requests") { return new ApiError(429, msg, { errorCode: "RATE_LIMIT" }); }
-  static internal(msg = "Internal Server Error") { return new ApiError(500, msg, { errorCode: "INTERNAL_ERROR", isOperational: false }); }
-  static serviceUnavailable(service: string) { return new ApiError(503, `${service} unavailable`, { errorCode: "SERVICE_UNAVAILABLE" }); }
+  log(): void { const lvl = this.statusCode >= 500 ? "error" : "warn"; logger[lvl](this.message, { statusCode: this.statusCode, errorCode: this.errorCode, requestId: this.requestId }); }
 
-  log(): void {
-    if (this.statusCode >= 500) logger.error(this.message, { errorCode: this.errorCode, stack: this.stack });
-    else logger.warn(this.message, { errorCode: this.errorCode });
-  }
+  static badRequest(msg = "Bad request") { return new ApiError(400, msg); }
+  static unauthorized(msg = "Unauthorized") { return new ApiError(401, msg); }
+  static forbidden(msg = "Forbidden") { return new ApiError(403, msg); }
+  static notFound(msg = "Resource not found") { return new ApiError(404, msg); }
+  static conflict(msg = "Conflict") { return new ApiError(409, msg); }
+  static validation(msg = "Validation error") { return new ApiError(422, msg); }
+  static tooMany(msg = "Too many requests") { return new ApiError(429, msg); }
+  static internal(msg = "Internal server error") { return new ApiError(500, msg, { isOperational: false }); }
 }
