@@ -1,0 +1,15 @@
+import { Router } from "express";
+import { providerController } from "../controllers/provider.controller";
+import { authenticate } from "../middleware/auth";
+import { authorize } from "../middleware/auth";
+const router = Router();
+router.get("/", providerController.list);
+router.get("/:id", providerController.getById);
+router.post("/register", authenticate, providerController.register);
+router.get("/me/profile", authenticate, authorize("provider"), providerController.getMyProfile);
+router.put("/me/profile", authenticate, authorize("provider"), providerController.updateProfile);
+router.get("/me/jobs", authenticate, authorize("provider"), providerController.getMyJobs);
+router.get("/me/earnings", authenticate, authorize("provider"), providerController.getMyEarnings);
+router.get("/me/calendar", authenticate, authorize("provider"), providerController.getCalendar);
+router.put("/:id/verify", authenticate, authorize("admin"), providerController.verify);
+export default router;
