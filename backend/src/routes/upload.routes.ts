@@ -1,0 +1,14 @@
+import { Router, Request, Response, NextFunction } from "express";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { authenticate } from "../middleware/auth";
+import { ApiResponseBuilder } from "../utils/response";
+const uploadDir = path.join(__dirname, "../../uploads");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+const storage = multer.diskStorage({ destination: (_req,_file,cb) => cb(null, uploadDir), filename: (_req,file,cb) => { const u = Date.now()+"-"+Math.round(Math.random()*1e9); cb(null, u+path.extname(file.originalname)); } });
+const upload = multer({ storage, limits: { fileSize: 5*1024*1024 }, fileFilter: (_req,file,cb) => { const ext = /jpeg|jpg|png|gif|webp|pdf|doc|docx/.test(path.extname(file.originalname).toLowerCase()); ext ? cb(null, true) : cb(new Error("Only JPEG, PNG, PDF allowed")); } });
+const router = Router();
+router.post("/single", authenticate, upload.single("file"), (req,res,next) => { try { if (!req.file) return ApiResponseBuilder.error(res, 400, "No file"); ApiResponseBuilder.created(res, { url: `/uploads/${req.file.filename}`, filename: req.file.filename, size: req.file.size }, "File uploaded"); } catch(e) { next(e); } });
+router.post("/multiple", authenticate, upload.array("files", 10), (req,res,next) => { try { if (!req.files || !(req.files as any[]).length) return ApiResponseBuilder.error(res, 400, "No files"); const files = (req.files as any[]).map(f => ({ url: `/uploads/${f.filename}`, filename: f.filename, size: f.size })); ApiResponseBuilder.created(res, files, `${files.length} files uploaded`); } catch(e) { next(e); } });
+export default router;
